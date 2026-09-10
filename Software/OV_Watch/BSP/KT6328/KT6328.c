@@ -1,4 +1,7 @@
 #include "KT6328.h"
+#include "usart.h"
+#include "stdio.h"
+#include "string.h"
 
 void KT6328_GPIO_Init(void)
 {
@@ -16,6 +19,13 @@ void KT6328_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+}
+
+ // 发送一条 AT 指令（自动补 \r\n）
+void KT6328_SendATCmd(const char *cmd)
+{
+    HAL_UART_Transmit(&huart1, (uint8_t*)cmd, strlen(cmd), 0xffff);
+    HAL_UART_Transmit(&huart1, (uint8_t*)"\r\n", 2, 0xffff);
 }
 
 

@@ -10,6 +10,7 @@ extern "C" {
 void KT6328_GPIO_Init(void);
 void KT6328_Enable(void);
 void KT6328_Disable(void);
+void KT6328_SendATCmd(const char *cmd);
 
 
 #ifdef __cplusplus

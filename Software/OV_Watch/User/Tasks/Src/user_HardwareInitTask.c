@@ -18,6 +18,7 @@
 #include "lcd_init.h"
 #include "CST816.h"
 #include "DataSave.h"
+#include "kt6328.h"
 
 // ui
 //gui
@@ -147,12 +148,16 @@ void HardwareInitTask(void *argument)
 
 
     // BLE
-    HWInterface.BLE.Init();
-    HWInterface.BLE.Disable();
-
-    //set the KT6328 BautRate 9600
-    //default is 115200
-    //printf("AT+CT01\r\n");
+    HWInterface.BLE.Init();            // 配引脚
+    HWInterface.BLE.Enable();          // 上电
+    delay_ms(200);                     // 等芯片稳定
+    KT6328_SendATCmd("AT+BMOV_WATCH"); // 设 BLE 名称
+    delay_ms(300);
+    KT6328_SendATCmd("AT+CR00");       // 关上电回传
+    delay_ms(300);
+    KT6328_SendATCmd("AT+CZ");         // 软复位生效
+    delay_ms(200);                     // 等软复位
+    HWInterface.BLE.Disable();         // 配完关蓝牙省电
 
     // touch
     CST816_GPIO_Init();
