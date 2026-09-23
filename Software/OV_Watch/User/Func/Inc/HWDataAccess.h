@@ -125,6 +125,7 @@ typedef struct
 
 /**
   * @brief  HW RTC Interface definition
+  * 它把 RTC 时钟驱动能做的 4 件事，抽象成 4 个函数指针	
   */
 typedef struct
 {
@@ -246,15 +247,21 @@ typedef struct
   */
 typedef struct
 {
-    HW_RTC_InterfaceTypeDef RealTimeClock;
-    HW_BLE_InterfaceTypeDef BLE;
-    HW_Power_InterfaceTypeDef Power;
-    HW_LCD_InterfaceTypeDef LCD;
-    HW_IMU_InterfaceTypeDef IMU;
-    HW_AHT21_InterfaceTypeDef AHT21;
-    HW_Barometer_InterfaceTypeDef Barometer;
-    HW_Ecompass_InterfaceTypeDef Ecompass;
-    HW_HRmeter_InterfaceTypeDef HR_meter;
+	//按「硬件模块」分成一个个子结构体，每个对应一个硬件
+    HW_RTC_InterfaceTypeDef RealTimeClock;     //RTC 时钟 
+    HW_BLE_InterfaceTypeDef BLE;               //蓝牙芯片 KT6368A
+    HW_Power_InterfaceTypeDef Power;           //电池/电源 
+    HW_LCD_InterfaceTypeDef LCD;               //屏幕背光 
+    HW_IMU_InterfaceTypeDef IMU;               //MPU6050 计步
+    HW_AHT21_InterfaceTypeDef AHT21;           //温湿度传感器
+    HW_Barometer_InterfaceTypeDef Barometer;   //气压计
+    HW_Ecompass_InterfaceTypeDef Ecompass;     //电子罗盘
+    HW_HRmeter_InterfaceTypeDef HR_meter;      //心率/血氧 EM7028
+	
+	
+//    每个子接口里有两类东西：
+//    函数指针（如 GetTimeDate）——指向真正干活的底层函数
+//    数据字段（如 Steps、temperature）——缓存读到的硬件数值，供 UI 直接读
 } HW_InterfaceTypeDef;
 
 
@@ -267,7 +274,9 @@ typedef struct
 /***************************
  *  External Variables
  ***************************/
-extern HW_InterfaceTypeDef HWInterface;
+extern HW_InterfaceTypeDef HWInterface;  //是这个工程里「硬件数据中间层」的一个全局变量，
+                                         //你可以把它理解成一块「统一控制面板」——UI 层只跟它
+                                         //打交道，不直接碰底层硬件
 
 
 

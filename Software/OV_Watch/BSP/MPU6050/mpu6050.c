@@ -447,7 +447,7 @@ void MPU_Get_Angles(float * roll,float * pitch)
 /**************************************************************************/
 /*
     @brief  check the MPU6050 is horizontal or not
-
+            确认是否处于水平状态
     @param  NULL
 
     @return 1 if is horizontal

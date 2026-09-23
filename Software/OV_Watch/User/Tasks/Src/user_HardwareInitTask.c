@@ -53,8 +53,8 @@ void HardwareInitTask(void *argument)
     // RTC Wake
     if(HAL_RTCEx_SetWakeUpTimer_IT(&hrtc, 2000, RTC_WAKEUPCLOCK_RTCCLK_DIV16) != HAL_OK)
     {
-      Error_Handler();
-    }
+      Error_Handler();   // RTC 唤醒定时器设置失败 → 卡死，提醒你出错了
+	}
     // usart start
     HAL_UART_Receive_DMA(&huart1,(uint8_t*)HardInt_receive_str,25);
     __HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE);
@@ -157,7 +157,7 @@ void HardwareInitTask(void *argument)
     delay_ms(300);
     KT6328_SendATCmd("AT+CZ");         // 软复位生效
     delay_ms(200);                     // 等软复位
-    HWInterface.BLE.Disable();         // 配完关蓝牙省电
+    // 蓝牙保持上电，开机后就能被音箱扫描并连接（关掉就搜不到了）
 
     // touch
     CST816_GPIO_Init();
@@ -184,9 +184,8 @@ void HardwareInitTask(void *argument)
     ui_init();
 
     xTaskResumeAll();
-		vTaskDelete(NULL);
-		osDelay(500);
+	vTaskDelete(NULL);  // ← 删除当前任务（自己），这个任务只执行一遍就删除，让出资源
+	osDelay(500);
 	}
 }
-
 

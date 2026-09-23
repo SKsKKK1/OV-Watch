@@ -1,3 +1,16 @@
+/* ============================================================
+ * 菜单页（Menu Page）
+ * ------------------------------------------------------------
+ * 手表的"主菜单 / 功能列表页"：一屏竖排的功能入口列表。
+ * 点某个入口（日历、计算器、心率……）就跳到对应的功能页。
+ *
+ * 本文件做的事：
+ *   1. 注册本页到页面管理器（Page_Menu）
+ *   2. 定义 12 个菜单项的控件变量
+ *   3. 写每个菜单项的"点击跳转"事件回调
+ *   4. 在 init 里用 LVGL 把整个列表画出来，并注册事件
+ * ============================================================ */
+
 #include "../../ui.h"
 #include "../../ui_helpers.h"
 #include "../Inc/ui_HomePage.h"
@@ -17,12 +30,21 @@
 #include "../Inc/ui_AboutPage.h"
 
 
-///////////////////// Page Manager //////////////////
+/* ==================== 页面注册 ====================
+ * 把菜单页登记进页面管理器（PageManager）。
+ * Page_t 三个成员：初始化函数、反初始化函数、屏幕对象指针。
+ * 首页等地方用 Page_Load(&Page_Menu) 就能进入本页。
+ */
 Page_t Page_Menu = {ui_MenuPage_screen_init, ui_MenuPage_screen_deinit, &ui_MenuPage};
 
-///////////////////// VARIABLES ////////////////////
-//menu page
-lv_obj_t * ui_MenuPage;
+/* ==================== 控件变量 ====================
+ * 每个菜单项有 4 个控件，命名规律：
+ *   ui_MenuXxxPanel   容器面板（一行，240×70）
+ *   ui_MenuXxxButton  左边的圆形彩色按钮
+ *   ui_MenuXxxicon    按钮上的图标
+ *   ui_MenuXxxLabel   右边的文字
+ */
+lv_obj_t * ui_MenuPage;   // 本页的屏幕对象
 
 lv_obj_t * ui_MenuCalPanel;
 lv_obj_t * ui_MenuCalButton;
@@ -85,11 +107,12 @@ lv_obj_t * ui_MenuAbicon;
 lv_obj_t * ui_MenuAbLabel;
 
 
-//scroll y
+/* 记住菜单列表上次滚动到哪，下次进来恢复到原位置（见 init 末尾的 lv_obj_scroll_to）*/
 int16_t ui_MenuScrollY = 0;
 
 
 ///////////////////// FUNCTIONS ////////////////////
+/* 本页整体的事件回调：右滑返回首页；滚动结束时记录当前位置 */
 void ui_event_MenuPage(lv_event_t * e)
 {
    lv_event_code_t event_code = lv_event_get_code(e);
@@ -109,6 +132,11 @@ void ui_event_MenuPage(lv_event_t * e)
 }
 
 
+/* ==================== 日历入口 ====================
+ * 点"日历"菜单项时触发：
+ *   Page_Load(&Page_Calender) 把日历页压入页面栈，进入日历页。
+ * 注意：这里用 Page_Load 是"前进"；日历页返回时要用 Page_Back 是"后退"。
+ */
 void ui_event_MenuCalPanel(lv_event_t * e)
 {
 	lv_event_code_t event_code = lv_event_get_code(e);
@@ -124,6 +152,11 @@ void ui_event_MenuCalPanel(lv_event_t * e)
 	}
 }
 
+/* ==================== 以下所有 ui_event_MenuXxxPanel ====================
+ * 结构完全一样，只做一件事：
+ *   点击对应的菜单项 → Page_Load(&Page_Xxx) 跳到对应功能页。
+ * 每个都用 #if XXX_PAGE_EN 开关包着，开关为 0 时点击无反应。
+ * ======================================================================== */
 void ui_event_MenuComPanel(lv_event_t * e)
 {
 	lv_event_code_t event_code = lv_event_get_code(e);
@@ -295,11 +328,17 @@ void ui_event_MenuAbPanel(lv_event_t * e)
     }
 }
 
-///////////////////// SCREEN init ////////////////////
+/* ==================== 页面初始化 ====================
+ * 用 LVGL 把 12 个菜单项一行行画出来。
+ * 每个菜单项 = 一个 Panel 容器（里面放 Button 按钮 + icon 图标 + Label 文字）。
+ * 下面"日历"这一项是最完整的样板，其余 11 项结构完全相同，
+ * 只是 y 坐标（每个 +70）、图标、文字、颜色不同。
+ */
 void ui_MenuPage_screen_init(void)
 {
     ui_MenuPage = lv_obj_create(NULL);
 
+    /* ---- 第 1 项：日历（样板，其余 11 项结构相同）---- */
     ui_MenuCalPanel = lv_obj_create(ui_MenuPage);
     lv_obj_set_width(ui_MenuCalPanel, 240);
     lv_obj_set_height(ui_MenuCalPanel, 70);
@@ -313,6 +352,7 @@ void ui_MenuPage_screen_init(void)
     lv_obj_set_style_bg_color(ui_MenuCalPanel, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_PRESSED);
     lv_obj_set_style_bg_opa(ui_MenuCalPanel, 100, LV_PART_MAIN | LV_STATE_PRESSED);
 
+    /* 左边的圆形彩色按钮（40×40）*/
     ui_MenuCalButton = lv_btn_create(ui_MenuCalPanel);
     lv_obj_set_width(ui_MenuCalButton, 40);
     lv_obj_set_height(ui_MenuCalButton, 40);
@@ -323,6 +363,7 @@ void ui_MenuPage_screen_init(void)
     lv_obj_set_style_bg_color(ui_MenuCalButton, lv_color_hex(0xFF8080), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_MenuCalButton, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    /* 按钮上的图标：用 iconfont 图标字体画的（不是图片）*/
     ui_MenuCalicon = lv_label_create(ui_MenuCalButton);
     lv_obj_set_width(ui_MenuCalicon, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_MenuCalicon, LV_SIZE_CONTENT);    /// 1
@@ -330,6 +371,7 @@ void ui_MenuPage_screen_init(void)
     lv_label_set_text(ui_MenuCalicon, "");
     lv_obj_set_style_text_font(ui_MenuCalicon, &ui_font_iconfont30, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    /* 右边的文字"日 历" */
     ui_MenuCalLabel = lv_label_create(ui_MenuCalPanel);
     lv_obj_set_width(ui_MenuCalLabel, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_MenuCalLabel, LV_SIZE_CONTENT);    /// 1
@@ -339,6 +381,7 @@ void ui_MenuPage_screen_init(void)
     lv_label_set_text(ui_MenuCalLabel, "日 历");
     lv_obj_set_style_text_font(ui_MenuCalLabel, &ui_font_Cuyuan20, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    /* ---- 第 2 项：计算器（结构同上，y 坐标 +70，仅颜色/图标/文字不同）---- */
     ui_MenuComPanel = lv_obj_create(ui_MenuPage);
     lv_obj_set_width(ui_MenuComPanel, 240);
     lv_obj_set_height(ui_MenuComPanel, 70);
@@ -815,6 +858,10 @@ void ui_MenuPage_screen_init(void)
 
 }
 
-/////////////////// SCREEN deinit ////////////////////
+/* ==================== 页面反初始化 ====================
+ * 本页没有需要手动释放的资源（无定时器等），所以为空。
+ * （init 末尾的 lv_obj_scroll_to 恢复滚动位置、lv_obj_add_event_cb 注册事件，
+ *   都属于本页自身资源，不需要在这里额外清理。）
+ */
 void ui_MenuPage_screen_deinit(void)
 {}

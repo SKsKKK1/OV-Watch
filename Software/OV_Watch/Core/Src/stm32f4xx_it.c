@@ -67,6 +67,7 @@ extern TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN EV */
 uint8_t HardInt_receive_str[25];
+uint16_t HardInt_receive_len;
 
 /* USER CODE END EV */
 
@@ -213,15 +214,18 @@ void TIM1_UP_TIM10_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
+  // 串口空闲中断：一串数据收完才触发（一直空闲不触发，只有"有数据→停止"这一刻触发）
   if(__HAL_UART_GET_FLAG(&huart1,UART_FLAG_IDLE)!=RESET)
   {
+    __HAL_UART_CLEAR_FLAG(&huart1,UART_FLAG_IDLE);   // 先清标志，否则会反复触发
+    // 实际收到字节数 = 设定的25 - DMA还剩下没搬完的（要在停DMA前读，否则计数不可靠）
+    HardInt_receive_len = 25 - __HAL_DMA_GET_COUNTER(huart1.hdmarx);
+    HAL_UART_DMAStop(&huart1);                       // 再停 DMA
     if(HardIntEventHandle != NULL)
     {
-      osEventFlagsSet(HardIntEventHandle, HARDINT_EVENT_UART);
+      osEventFlagsSet(HardIntEventHandle, HARDINT_EVENT_UART);  // 通知任务来取数据
     }
-    __HAL_UART_CLEAR_FLAG(&huart1,UART_FLAG_IDLE);
-    HAL_UART_DMAStop(&huart1);
-    HAL_UART_Receive_DMA(&huart1, HardInt_receive_str, 25);
+    HAL_UART_Receive_DMA(&huart1, HardInt_receive_str, 25);     // 重启 DMA，准备收下一串
   }
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);

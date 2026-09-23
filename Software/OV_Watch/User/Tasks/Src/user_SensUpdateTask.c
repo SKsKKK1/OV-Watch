@@ -1,3 +1,18 @@
+/* ============================================================
+ * 传感器更新任务（Sensor Update Tasks）
+ * ------------------------------------------------------------
+ * 本文件包含三个跟"传感器"有关的 FreeRTOS 任务：
+ *
+ *   1. MPUCheckTask         —— 抬腕检测：判断手表是"抬起来"还是"放下"
+ *   2. HRDataUpdateTask     —— 心率更新：在心率页测量并更新心率值
+ *   3. SensorDataUpdateTask —— 传感器数据更新：更新首页的电量/步数/温湿度，
+ *                              以及环境页/指南针页的实时数据
+ *
+ * 用到的传感器：
+ *   MPU6050(计步/姿态)、EM7028(心率)、AHT21(温湿度)、
+ *   LSM303(指南针)、SPL06(气压计)
+ * ============================================================ */
+
 /* Private includes -----------------------------------------------------------*/
 //includes
 #include "user_TasksInit.h"
@@ -28,7 +43,15 @@
 uint32_t user_HR_timecount=0;
 
 /* Private function prototypes -----------------------------------------------*/
-// 这是EM7028官方lib的库函数, 没有lib用不了
+/* ==================== EM7028 官方库函数声明 ====================
+ * "lib库"是什么：EM7028 心率传感器厂商把核心算法（心率/血压/血氧计算）
+ * 编译成了 .lib 静态库文件提供，但没有公开源码（保护知识产权）。
+ *
+ * 我们能做的：通过下面 extern 声明这些函数，在代码里调用它们；
+ * 不能做的：看不到也改不了它们的内部实现。
+ *
+ * 下面这些就是 .lib 里导出的函数接口（血压、血氧、心率算法）。
+ */
 extern uint8_t GET_BP_MAX (void);
 extern uint8_t GET_BP_MIN (void);
 extern void Blood_Process (void);
@@ -43,27 +66,35 @@ extern int em70xx_reset(int ref);
   * @param  argument: Not used
   * @retval None
   */
+/* ==================== 抬腕检测任务 ====================
+ * 每 300ms 检查一次 MPU6050 的姿态（是否水平 = 是否抬起手腕）。
+ *
+ * 逻辑：如果开启了"抬腕唤醒"，判断手表当前是"抬起"还是"放下"，并置状态，供RunMode里判断手腕瞬间状态使用。
+ *   当从"抬起"变为"放下"，且当前在首页/菜单/设置页时，
+ *   发 Stop_MessageQueue 让手表进入休眠（省电）。
+ *   
+ */
 void MPUCheckTask(void *argument)
 {
 	while(1)
 	{
 		if(HWInterface.IMU.wrist_is_enabled)
 		{
-			if(MPU_isHorizontal())
+			if(MPU_isHorizontal())   //是否水平
 			{
-				HWInterface.IMU.wrist_state = WRIST_UP;
+				HWInterface.IMU.wrist_state = WRIST_UP;   //水平-->抬起手腕
 			}
 			else
 			{
-				if(WRIST_UP == HWInterface.IMU.wrist_state)
+				if(WRIST_UP == HWInterface.IMU.wrist_state)  //抬起刚放下（这个瞬间）
 				{
-					HWInterface.IMU.wrist_state = WRIST_DOWN;
+					HWInterface.IMU.wrist_state = WRIST_DOWN;   //手腕放下
 					if( Page_Get_NowPage()->page_obj == &ui_HomePage ||
 						Page_Get_NowPage()->page_obj == &ui_MenuPage ||
-						Page_Get_NowPage()->page_obj == &ui_SetPage )
+						Page_Get_NowPage()->page_obj == &ui_SetPage )   //如果处在这三个界面
 					{
 						uint8_t Stopstr;
-						osMessageQueuePut(Stop_MessageQueue, &Stopstr, 0, 1);//sleep
+						osMessageQueuePut(Stop_MessageQueue, &Stopstr, 0, 1);//sleep休眠模式
 					}
 				}
 				HWInterface.IMU.wrist_state = WRIST_DOWN;
@@ -78,6 +109,12 @@ void MPUCheckTask(void *argument)
   * @param  argument: Not used
   * @retval None
   */
+/* ==================== 心率更新任务 ====================
+ * 当当前页面是心率页(ui_HRPage)时，每 50ms 执行一次：
+ *   1. 唤醒心率传感器 EM7028
+ *   2. 调用 EM7028 官方 lib 的心率算法(HR_Calculate)算出心率值
+ *   3. 结果合理(50~120)时，更新 HWInterface.HR_meter.HrRate 供 UI 显示
+ */
 void HRDataUpdateTask(void *argument)
 {
 	uint8_t IdleBreakstr=0;
@@ -113,6 +150,17 @@ void HRDataUpdateTask(void *argument)
   * @param  argument: Not used
   * @retval None
   */
+/* ==================== 传感器数据更新任务 ====================
+ * 无限循环做两件事：
+ *
+ *   1. 收到 HomeUpdata_MessageQueue → 更新首页数据（电量/步数/温湿度），
+ *      最后发 DataSave_MessageQueue 触发保存到 EEPROM。
+ *
+ *   2. 根据当前页面更新对应传感器数据：
+ *      - 血氧页(SPO2)     ：暂未实现（if(0) 占位）
+ *      - 环境页(Env)      ：更新温湿度
+ *      - 指南针页(Compass)：更新方位角 + 海拔
+ */
 void SensorDataUpdateTask(void *argument)
 {
 	uint8_t value_strbuf[6];

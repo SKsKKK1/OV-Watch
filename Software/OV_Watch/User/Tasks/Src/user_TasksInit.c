@@ -16,7 +16,7 @@
 #include "user_ScrRenewTask.h"
 #include "user_SensUpdateTask.h"
 #include "user_ChargCheckTask.h"
-#include "user_MessageSendTask.h"
+#include "user_BleCommTask.h"
 #include "user_DataSaveTask.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -110,9 +110,9 @@ const osThreadAttr_t ChargPageEnterTask_attributes = {
 };
 
 //messagesendtask
-osThreadId_t MessageSendTaskHandle;
-const osThreadAttr_t MessageSendTask_attributes = {
-  .name = "MessageSendTask",
+osThreadId_t BleCommTaskHandle;
+const osThreadAttr_t BleCommTask_attributes = {
+  .name = "BleCommTask",
   .stack_size = 128 * 5,
   .priority = (osPriority_t) osPriorityLow1,
 };
@@ -168,12 +168,12 @@ void User_Tasks_Init(void)
 	IdleBreak_MessageQueue = osMessageQueueNew(1, 1, NULL);
 	HomeUpdata_MessageQueue = osMessageQueueNew(1, 1, NULL);
 	DataSave_MessageQueue = osMessageQueueNew(2, 1, NULL);
-  HardIntEventHandle = osEventFlagsNew(NULL);
+    HardIntEventHandle = osEventFlagsNew(NULL);
 
-	/* add threads, ... */
-  HardwareInitTaskHandle  = osThreadNew(HardwareInitTask, NULL, &HardwareInitTask_attributes);
-  LvHandlerTaskHandle  = osThreadNew(LvHandlerTask, NULL, &LvHandlerTask_attributes);
-  WDOGFeedTaskHandle   = osThreadNew(WDOGFeedTask, NULL, &WDOGFeedTask_attributes);
+   /* add threads, ... */
+    HardwareInitTaskHandle  = osThreadNew(HardwareInitTask, NULL, &HardwareInitTask_attributes);
+    LvHandlerTaskHandle  = osThreadNew(LvHandlerTask, NULL, &LvHandlerTask_attributes);
+    WDOGFeedTaskHandle   = osThreadNew(WDOGFeedTask, NULL, &WDOGFeedTask_attributes);
 	IdleEnterTaskHandle  = osThreadNew(IdleEnterTask, NULL, &IdleEnterTask_attributes);
 	StopEnterTaskHandle  = osThreadNew(StopEnterTask, NULL, &StopEnterTask_attributes);
 	KeyTaskHandle 			 = osThreadNew(KeyTask, NULL, &KeyTask_attributes);
@@ -181,7 +181,7 @@ void User_Tasks_Init(void)
 	SensorDataTaskHandle = osThreadNew(SensorDataUpdateTask, NULL, &SensorDataTask_attributes);
 	HRDataTaskHandle		 = osThreadNew(HRDataUpdateTask, NULL, &HRDataTask_attributes);
 	ChargPageEnterTaskHandle = osThreadNew(ChargPageEnterTask, NULL, &ChargPageEnterTask_attributes);
-  MessageSendTaskHandle = osThreadNew(MessageSendTask, NULL, &MessageSendTask_attributes);
+    BleCommTaskHandle = osThreadNew(BleCommTask, NULL, &BleCommTask_attributes);
 	MPUCheckTaskHandle		= osThreadNew(MPUCheckTask, NULL, &MPUCheckTask_attributes);
 	DataSaveTaskHandle		= osThreadNew(DataSaveTask, NULL, &DataSaveTask_attributes);
 

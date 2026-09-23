@@ -55,7 +55,7 @@ uint8_t EM7028_hrs_init()
 	return 0;
 }
 
-uint8_t EM7028_hrs_Enable()
+uint8_t EM7028_hrs_Enable(void)
 {
 	uint8_t i = 5;
 	while(EM7028_Get_ID() != 0x36 && i)
@@ -69,7 +69,7 @@ uint8_t EM7028_hrs_Enable()
 	return 0;
 }
 
-uint8_t EM7028_hrs_DisEnable()
+uint8_t EM7028_hrs_DisEnable(void)
 {
 	uint8_t i = 5;
 	while(EM7028_Get_ID() != 0x36 && i)

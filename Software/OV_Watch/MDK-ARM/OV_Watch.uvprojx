@@ -597,9 +597,9 @@
               <FilePath>..\User\Tasks\Src\user_DataSaveTask.c</FilePath>
             </File>
             <File>
-              <FileName>user_MessageSendTask.c</FileName>
+              <FileName>user_BleCommTask.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\User\Tasks\Src\user_MessageSendTask.c</FilePath>
+              <FilePath>..\User\Tasks\Src\user_BleCommTask.c</FilePath>
             </File>
             <File>
               <FileName>user_ChargCheckTask.c</FileName>

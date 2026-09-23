@@ -30,23 +30,23 @@
 void HW_RTC_Get_TimeDate(HW_DateTimeTypeDef * nowdatetime)
 {
 
-	#if HW_USE_RTC
+	#if HW_USE_RTC  // 真机分支(HW_USE_HARDWARE=1)：从 RTC 硬件外设读真实时间
 		if (nowdatetime != NULL)
 		{
-            RTC_DateTypeDef nowdate;
-            RTC_TimeTypeDef nowtime;
-			HAL_RTC_GetTime(&hrtc, &nowtime, RTC_FORMAT_BIN);
+            RTC_DateTypeDef nowdate; //年月日星期
+            RTC_TimeTypeDef nowtime; //时分秒毫秒微秒
+			HAL_RTC_GetTime(&hrtc, &nowtime, RTC_FORMAT_BIN);  // BIN=按二进制读出(11点读作11)，BCD才是0x11这种编码；HAL会自动与硬件BCD寄存器互转
 			HAL_RTC_GetDate(&hrtc, &nowdate, RTC_FORMAT_BIN);
             nowdatetime->Year = nowdate.Year;
             nowdatetime->Month = nowdate.Month;
             nowdatetime->Date = nowdate.Date;
-			nowdatetime->WeekDay = weekday_calculate(nowdatetime->Year, nowdatetime->Month, nowdatetime->Date, 20);
+			nowdatetime->WeekDay = weekday_calculate(nowdatetime->Year, nowdatetime->Month, nowdatetime->Date, 20);  // HAL读出的星期不可靠，用公式重算；参数20=世纪20xx(RTC年份仅存后两位)
             nowdatetime->Hours = nowtime.Hours;
             nowdatetime->Minutes = nowtime.Minutes;
             nowdatetime->Seconds = nowtime.Seconds;
 		}
 	#else
-		nowdatetime->Year = 24;
+		nowdatetime->Year = 24;  // 仿真分支(HW_USE_HARDWARE=0)：无RTC硬件，返回固定假日期 2024-06-23 11:59:55
 		nowdatetime->Month = 6;
 		nowdatetime->Date = 23;
 		nowdatetime->WeekDay = 7;

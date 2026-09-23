@@ -56,7 +56,7 @@ void MX_RTC_Init(void)
   }
 
   /* USER CODE BEGIN Check_RTC_BKUP */
-	if(HAL_RTCEx_BKUPRead(&hrtc,RTC_BKP_DR0)!=0X5050)//ÊÇ·ñµÚÒ»´ÎÅäÖÃ
+	if(HAL_RTCEx_BKUPRead(&hrtc,RTC_BKP_DR0)!=0X5050)// æ˜¯å¦ç¬¬ä¸€æ¬¡è¿è¡Œ 
   {
   /* USER CODE END Check_RTC_BKUP */
 
@@ -88,7 +88,7 @@ void MX_RTC_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN RTC_Init 2 */
-	HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR0,0X5050);//±ê¼ÇÒÑ¾­³õÊ¼»¯¹ıÁË
+	HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR0,0X5050);// æ ‡è®°å·²ç»åˆå§‹åŒ–è¿‡äº†
   }
   /* USER CODE END RTC_Init 2 */
 
@@ -160,7 +160,7 @@ uint8_t weekday_calculate(int y,int m,int d,int c)
 
 void RTC_SetTime(uint8_t hours, uint8_t minutes, uint8_t seconds)
 {
-	RTC_TimeTypeDef time={0};//²»ÉèÖÃÎª{0}Ê±¼ä¾Í»áÀëÆ×
+	RTC_TimeTypeDef time={0};// åˆå§‹åŒ–ä¸º{0}æ—¶å°±ä¼šæ¸…é›¶  
 	time.Hours=hours;
 	time.Minutes=minutes;
 	time.Seconds=seconds;
@@ -172,7 +172,7 @@ void RTC_SetTime(uint8_t hours, uint8_t minutes, uint8_t seconds)
 
 void RTC_SetDate(uint8_t year, uint8_t month, uint8_t date)
 {
-	RTC_DateTypeDef setdate={0};//²»ÉèÖÃÎª{0}Ê±¼ä¾Í»áÀëÆ×
+	RTC_DateTypeDef setdate={0};// åˆå§‹åŒ–ä¸º{0}æ—¶å°±ä¼šæ¸…é›¶  
 	setdate.Date=date;
 	setdate.Month=month;
 	setdate.Year=year;

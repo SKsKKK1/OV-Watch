@@ -22,7 +22,7 @@
 #define __STM32F4xx_IT_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Private includes ----------------------------------------------------------*/
@@ -43,6 +43,7 @@
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 extern uint8_t HardInt_receive_str[25];
+extern uint16_t HardInt_receive_len;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
