@@ -79,7 +79,7 @@ void ChargPageEnterTask(void *argument)
 			{
 				Page_Load(&Page_Charg);
 			}
-			// 充电引脚是双边沿触发
+			// 充电引脚是双边沿触发8
 			// 情况2：没在充电，且当前在充电页 → 返回上一页
 			else if((!ChargeCheck()) && (Page_Get_NowPage()->page_obj == &ui_ChargPage))
 			{

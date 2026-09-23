@@ -19,6 +19,7 @@ void KT6328_SendText(const char *cmd, const char *params);
 #define BLE_CMD_VOL  "VOL"
 #define BLE_CMD_LED  "LED"
 #define BLE_CMD_TIME "TIME"
+#define BLE_CMD_REQ  "REQ"
 
 
 #ifdef __cplusplus

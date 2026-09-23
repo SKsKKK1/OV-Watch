@@ -31,7 +31,7 @@ void KT6328_SendATCmd(const char *cmd)
  // 发送一条文本帧：$指令码,参数\r\n（参数为 NULL 或空串时发 $指令码\r\n）
 void KT6328_SendText(const char *cmd, const char *params)
 {
-    char buf[32];
+    char buf[128];
     int len;
 
     if (params != NULL && params[0] != '\0')

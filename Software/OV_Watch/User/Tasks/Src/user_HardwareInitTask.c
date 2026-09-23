@@ -156,8 +156,8 @@ void HardwareInitTask(void *argument)
     KT6328_SendATCmd("AT+CR00");       // 关上电回传
     delay_ms(300);
     KT6328_SendATCmd("AT+CZ");         // 软复位生效
-    delay_ms(200);                     // 等软复位
-    // 蓝牙保持上电，开机后就能被音箱扫描并连接（关掉就搜不到了）
+    delay_ms(300);                     // 等软复位完成
+    HWInterface.BLE.Disable();         // 配置完，默认关闭蓝牙（用户点击蓝牙按钮才开启）
 
     // touch
     CST816_GPIO_Init();

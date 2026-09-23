@@ -6,6 +6,7 @@
 #include "../Inc/ui_SetPage.h"
 
 #include "../../../Func/Inc/HWDataAccess.h"
+#include "../../../Tasks/Inc/user_BleCommTask.h"
 
 
 ///////////////////// VARIABLES ////////////////////
@@ -199,16 +200,19 @@ void ui_event_BLEButton(lv_event_t * e)
     lv_obj_t * target = lv_event_get_target(e);
     if(event_code == LV_EVENT_VALUE_CHANGED &&  lv_obj_has_state(target, LV_STATE_CHECKED))
     {
-        //checked
+        //checked：开启蓝牙 + 开始采集
         HWInterface.BLE.Enable();
         ui_HomePageBLEEN=1;
+        g_ble_on = 1;          // 通知 BLE 任务开始采集
 
     }
     if(event_code == LV_EVENT_VALUE_CHANGED &&  !lv_obj_has_state(target, LV_STATE_CHECKED))
     {
-        //released
+        //released：关闭蓝牙 + 停止采集和发送
 				HWInterface.BLE.Disable();
         ui_HomePageBLEEN=0;
+        g_ble_on = 0;          // 停止采集
+        g_send_enable = 0;     // 停止发送
     }
 }
 

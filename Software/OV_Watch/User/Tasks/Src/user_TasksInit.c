@@ -113,7 +113,7 @@ const osThreadAttr_t ChargPageEnterTask_attributes = {
 osThreadId_t BleCommTaskHandle;
 const osThreadAttr_t BleCommTask_attributes = {
   .name = "BleCommTask",
-  .stack_size = 128 * 5,
+  .stack_size = 128 * 10,
   .priority = (osPriority_t) osPriorityLow1,
 };
 
