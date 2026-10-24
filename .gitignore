@@ -1,0 +1,33 @@
+# 忽略GUI设置（Keil 用户配置）
+*.uvguix.*
+
+# 忽略所有位置的 .vscode 目录
+**/.vscode/
+
+# 忽略编译产物目录
+**/output/
+**/Objects/
+**/Listings/
+
+# 忽略编译中间文件
+*.o
+*.crf
+*.d
+*.axf
+*.dep
+*.lst
+*.htm
+*.map
+*.bak
+
+# 工具目录
+.claude/
+
+# 模拟器 / CMake 构建目录
+**/build/
+**/bin/
+
+# 归档压缩包（源码请以仓库内文件为准）
+*.zip
+*.7z
+*.rar
