@@ -9,9 +9,11 @@
 #if LV_COLOR_DEPTH != 16
     #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
-#if LV_COLOR_16_SWAP !=1
-    #error "LV_COLOR_16_SWAP should be 0 to match SquareLine Studio's settings"
-#endif
+/* 注：LV_COLOR_16_SWAP 在 Keil 真机=1（屏幕字节交换）、仿真器=0，两者不同，
+ * SquareLine 默认的检查不适用于本工程硬件，故不做强制检查。 */
+// #if LV_COLOR_16_SWAP != 0
+//     #error "LV_COLOR_16_SWAP should be 0 to match SquareLine Studio's settings"
+// #endif
 
 /////////////////////// Timer //////////////////////
 /**

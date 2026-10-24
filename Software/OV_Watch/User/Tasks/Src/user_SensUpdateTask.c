@@ -41,6 +41,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 uint32_t user_HR_timecount=0;
+uint8_t g_hr_measure = 0;   // 心率检测开关（睡眠页开关控制，1=检测中）
 
 /* Private function prototypes -----------------------------------------------*/
 /* ==================== EM7028 官方库函数声明 ====================
@@ -122,7 +123,7 @@ void HRDataUpdateTask(void *argument)
 	uint8_t hr_temp=0;
 	while(1)
 	{
-		if(Page_Get_NowPage()->page_obj == &ui_HRPage)
+		if(Page_Get_NowPage()->page_obj == &ui_HRPage || g_hr_measure)
 		{
 			osMessageQueuePut(IdleBreak_MessageQueue, &IdleBreakstr, 0, 1);
 			//sensor wake up

@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 void BleCommTask(void *argument);
+void BLE_SyncSleepFlag(void);  // 睡眠标志实时同步：UI 滑块改变时立即更新快照并发送
 
 // 蓝牙开关状态（UI 蓝牙按钮控制，BLE 任务读取）
 extern uint8_t g_ble_on;       // 1=蓝牙开启（采集进行中） 0=关闭

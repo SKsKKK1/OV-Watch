@@ -7,7 +7,7 @@
 
 typedef struct
 {
-    char strque[10];
+    char strque[16];
     uint8_t Top_Point;
 
 }StrStack_t;

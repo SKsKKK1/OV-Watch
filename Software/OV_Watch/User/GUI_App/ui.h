@@ -29,6 +29,7 @@ LV_FONT_DECLARE(ui_font_iconfont30);
 LV_FONT_DECLARE(ui_font_iconfont32);
 LV_FONT_DECLARE(ui_font_iconfont34);
 LV_FONT_DECLARE(ui_font_iconfont45);
+LV_FONT_DECLARE(ui_font_fzcyjt16);
 
 void ui_init(void);
 

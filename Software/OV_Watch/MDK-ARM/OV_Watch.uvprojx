@@ -746,6 +746,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\GUI_App\Screens\Src\ui_TimerPage.c</FilePath>
             </File>
+            <File>
+              <FileName>ui_SleepPage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\GUI_App\Screens\Src\ui_SleepPage.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -825,6 +830,11 @@
               <FileName>ui_font_iconfont45.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\GUI_App\Fonts\ui_font_iconfont45.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_font_fzcyjt16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\GUI_App\Fonts\ui_font_fzcyjt16.c</FilePath>
             </File>
             <File>
               <FileName>ui_img_compass_needle_png.c</FileName>

@@ -28,6 +28,7 @@
 #include "../Inc/ui_GameSelectPage.h"
 #include "../Inc/ui_SetPage.h"
 #include "../Inc/ui_AboutPage.h"
+#include "../Inc/ui_SleepPage.h"
 
 
 /* ==================== 页面注册 ====================
@@ -105,6 +106,10 @@ lv_obj_t * ui_MenuAbPanel;
 lv_obj_t * ui_MenuAbButton;
 lv_obj_t * ui_MenuAbicon;
 lv_obj_t * ui_MenuAbLabel;
+
+lv_obj_t * ui_MenuSleepPanel;
+lv_obj_t * ui_MenuSleepButton;
+lv_obj_t * ui_MenuSleepLabel;
 
 
 /* 记住菜单列表上次滚动到哪，下次进来恢复到原位置（见 init 末尾的 lv_obj_scroll_to）*/
@@ -325,6 +330,17 @@ void ui_event_MenuAbPanel(lv_event_t * e)
 
 
         #endif
+    }
+}
+
+/* ==================== 睡眠入口 ==================== */
+void ui_event_MenuSleepPanel(lv_event_t * e)
+{
+	lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_CLICKED)
+    {
+        Page_Load(&Page_Sleep);
     }
 }
 
@@ -837,6 +853,43 @@ void ui_MenuPage_screen_init(void)
     lv_obj_set_style_text_font(ui_MenuAbLabel, &ui_font_Cuyuan20, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
+    /* ---- 第 13 项：睡眠（文字入口，暂不用图标）---- */
+    ui_MenuSleepPanel = lv_obj_create(ui_MenuPage);
+    lv_obj_set_width(ui_MenuSleepPanel, 240);
+    lv_obj_set_height(ui_MenuSleepPanel, 70);
+    lv_obj_set_x(ui_MenuSleepPanel, 0);
+    lv_obj_set_y(ui_MenuSleepPanel, 840);
+    lv_obj_set_align(ui_MenuSleepPanel, LV_ALIGN_TOP_MID);
+    lv_obj_clear_flag(ui_MenuSleepPanel, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_radius(ui_MenuSleepPanel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_MenuSleepPanel, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_MenuSleepPanel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui_MenuSleepPanel, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(ui_MenuSleepPanel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_MenuSleepPanel, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_PRESSED);
+    lv_obj_set_style_bg_opa(ui_MenuSleepPanel, 100, LV_PART_MAIN | LV_STATE_PRESSED);
+
+    /* 彩色圆形按钮（和别的菜单项一样，只是不放图标）*/
+    ui_MenuSleepButton = lv_btn_create(ui_MenuSleepPanel);
+    lv_obj_set_width(ui_MenuSleepButton, 40);
+    lv_obj_set_height(ui_MenuSleepButton, 40);
+    lv_obj_set_align(ui_MenuSleepButton, LV_ALIGN_LEFT_MID);
+    lv_obj_add_flag(ui_MenuSleepButton, LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
+    lv_obj_clear_flag(ui_MenuSleepButton, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_radius(ui_MenuSleepButton, 40, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_MenuSleepButton, lv_color_hex(0x5A7BD0), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_MenuSleepButton, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_MenuSleepLabel = lv_label_create(ui_MenuSleepPanel);
+    lv_obj_set_width(ui_MenuSleepLabel, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_MenuSleepLabel, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_MenuSleepLabel, 60);
+    lv_obj_set_y(ui_MenuSleepLabel, 0);
+    lv_obj_set_align(ui_MenuSleepLabel, LV_ALIGN_LEFT_MID);
+    lv_label_set_text(ui_MenuSleepLabel, "睡 眠");
+    lv_obj_set_style_text_font(ui_MenuSleepLabel, &ui_font_fzcyjt16, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+
 	//scroll back
 	lv_obj_scroll_to(ui_MenuPage,0,ui_MenuScrollY,LV_ANIM_OFF);
 
@@ -854,6 +907,7 @@ void ui_MenuPage_screen_init(void)
 	lv_obj_add_event_cb(ui_MenuGamePanel, ui_event_MenuGamePanel, LV_EVENT_ALL, NULL);
 	lv_obj_add_event_cb(ui_MenuSetPanel, ui_event_MenuSetPanel, LV_EVENT_ALL, NULL);
 	lv_obj_add_event_cb(ui_MenuAbPanel, ui_event_MenuAbPanel, LV_EVENT_ALL, NULL);
+	lv_obj_add_event_cb(ui_MenuSleepPanel, ui_event_MenuSleepPanel, LV_EVENT_ALL, NULL);
 
 
 }

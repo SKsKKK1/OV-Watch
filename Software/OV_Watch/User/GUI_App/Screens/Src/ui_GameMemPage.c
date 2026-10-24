@@ -13,7 +13,7 @@
 
 typedef struct {
     uint8_t matrix[MATRIX_SIZE * MATRIX_SIZE + 1];
-    char    * btnm_map[MATRIX_SIZE * MATRIX_SIZE + MATRIX_SIZE];
+    const char    * btnm_map[MATRIX_SIZE * MATRIX_SIZE + MATRIX_SIZE];
     uint8_t label_opa_map[MATRIX_SIZE * MATRIX_SIZE];
     uint8_t previous_id;
     uint8_t present_id;
@@ -23,7 +23,7 @@ typedef struct {
 static char * num_list[] = {"0","1","2","3","4","5","6","7","8"};
 void Game_Mem_Init(void);
 void list_rand_number(uint8_t arry[], uint8_t max_count, uint8_t count);
-void updata_btnm(char * btnm_map[], uint8_t matrix[MATRIX_SIZE * MATRIX_SIZE + 1]);
+void updata_btnm(const char * btnm_map[], uint8_t matrix[MATRIX_SIZE * MATRIX_SIZE + 1]);
 uint8_t Game_Mem_Finish(void);
 
 ///////////////////// Page Manager //////////////////
@@ -178,7 +178,7 @@ void list_rand_number(uint8_t arry[], uint8_t max_count, uint8_t count)
     }
 }
 
-void updata_btnm(char * btnm_map[], uint8_t matrix[MATRIX_SIZE * MATRIX_SIZE + 1])
+void updata_btnm(const char * btnm_map[], uint8_t matrix[MATRIX_SIZE * MATRIX_SIZE + 1])
 {
     uint8_t x,index;
     index = 0;

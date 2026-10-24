@@ -209,6 +209,13 @@ static void BLE_SendSensorData(void)
     KT6328_SendText("DATA", params);
 }
 
+/* 睡眠标志同步：UI 滑块改变时调用，只更新快照（不立即发送）
+ * 发送交给周期任务，睡眠标志随下一帧 $DATA 一起发出 */
+void BLE_SyncSleepFlag(void)
+{
+    g_sensor.sleep = g_sleep_flag;   // 只更新睡眠标志快照
+}
+
 /**
   * @brief  BLE 帧收发处理任务
   * @param  argument: Not used

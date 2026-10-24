@@ -62,6 +62,13 @@ void ui_CompageBtnM_event_cb(lv_event_t * e)
 
         if (txt != NULL)
         {
+            // 禁止连续输入两个运算符：本次是运算符且上一个字符也是运算符时，忽略本次
+            if ((btn_id == 3 || btn_id == 7 || btn_id == 11 || btn_id == 15) && CalStr.Top_Point > 0)
+            {
+                char last = CalStr.strque[CalStr.Top_Point - 1];
+                if (last == '+' || last == '-' || last == '*' || last == '/')
+                    return;
+            }
             if (ui_CompageTextarea != NULL)
             {
 							if(lv_textarea_get_cursor_pos(ui_CompageTextarea) <= TEXT_FULL)
@@ -222,7 +229,7 @@ void ui_ComputerPage_screen_init(void)
     lv_obj_set_style_bg_color(ui_CompageTextarea, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_CompageTextarea, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_size(ui_CompageTextarea, 200, 60); // 设置对象大小
-    lv_obj_align(ui_CompageTextarea, LV_ALIGN_TOP_LEFT, 0, 0);
+    lv_obj_align(ui_CompageTextarea, LV_ALIGN_TOP_LEFT, -10, 0);
     lv_obj_clear_flag(ui_CompageTextarea,LV_OBJ_FLAG_CLICKABLE);
     lv_obj_set_style_text_font(ui_CompageTextarea, &ui_font_Cuyuan24, 0);
     lv_textarea_set_align(ui_CompageTextarea, LV_TEXT_ALIGN_RIGHT);

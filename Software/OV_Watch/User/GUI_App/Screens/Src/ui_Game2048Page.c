@@ -27,7 +27,7 @@ static void Stack_Clear(Stack_T* stack);
 typedef struct {
     uint16_t score;
     uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE];
-    char    * btnm_map[MATRIX_SIZE * MATRIX_SIZE + MATRIX_SIZE];
+    const char    * btnm_map[MATRIX_SIZE * MATRIX_SIZE + MATRIX_SIZE];
     uint8_t     game_over;
 } ui_Game2048_t;
 
@@ -51,7 +51,7 @@ static char *Str2048Nums[]={"2","4","8","16","32","64","128","256","512","1024",
 
 static void Game_2048_init(void);
 static void init_matrix_num(uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
-static void update_btnm_map(char * btnm_map[], uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
+static void update_btnm_map(const char * btnm_map[], uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
 static void addRandom(uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
 static uint8_t move_up(uint16_t * score, uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
 static uint8_t move_down(uint16_t * score, uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
@@ -147,7 +147,7 @@ static void ui_event_Game2048BtnM(lv_event_t * e)
 static void ui_event_new_game_btn(lv_event_t * e)
 {
     lv_event_code_t code = lv_event_get_code(e);
-    if(code == LV_EVENT_LONG_PRESSED)
+    if(code == LV_EVENT_CLICKED)
     {
 			Game_2048_init();
       uint8_t strbuf[10];
@@ -236,7 +236,7 @@ static void init_matrix_num(uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE])
     addRandom(matrix);
 }
 
-static void update_btnm_map(char * btnm_map[], uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE])
+static void update_btnm_map(const char * btnm_map[], uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE])
 {
     uint8_t x, y, index;
     index = 0;
@@ -555,7 +555,7 @@ static uint8_t Stack_Pop(Stack_T* stack)
   if(stack->Top_Point == 0)
     {return -1;}
 
-    stack->Data[stack->Top_Point--] = NULL;
+    stack->Data[stack->Top_Point--] = 0;
     return 0;
 }
 
